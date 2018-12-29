@@ -1,0 +1,11 @@
+name: ProtocolSupportPotions
+version: 3.0
+description: Translates thrown potions for ProtocolSupport and ViaVersion
+api-version: 1.13
+website: "https://www.spigotmc.org/resources/protocolsupportpotions.52537/"
+depend: [ProtocolLib]
+softdepend:
+- "ProtocolSupport"
+- "ViaVersion"
+- "ViaRewind-Legacy-Support"
+main: dashnetwork.protocolsupportpotions.main.ProtocolSupportPotions
