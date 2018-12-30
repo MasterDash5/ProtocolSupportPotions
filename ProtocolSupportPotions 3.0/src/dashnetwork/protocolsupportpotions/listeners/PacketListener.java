@@ -78,8 +78,6 @@ public class PacketListener extends PacketAdapter {
                 int version = VersionUtils.getVersion(player);
                 PacketContainer edited = packet.deepClone();
 
-                player.sendMessage("" + edited.getIntegers().read(1));
-
                 if (version <= 210)
                     edited.getIntegers().write(0, 2002);
 
