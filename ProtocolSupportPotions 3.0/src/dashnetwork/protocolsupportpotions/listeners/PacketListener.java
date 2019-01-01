@@ -1,7 +1,6 @@
 package dashnetwork.protocolsupportpotions.listeners;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLib;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.injector.GamePhase;
@@ -16,12 +15,16 @@ import org.bukkit.entity.ThrownPotion;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class PacketListener extends PacketAdapter {
 
     public PacketListener() {
-        super(new AdapterParameteters().gamePhase(GamePhase.BOTH).plugin(ProtocolSupportPotions.getInstance()).types(new HashSet<>(ProtocolSupportPotions.getInstance().getAllPackets())).listenerPriority(ListenerPriority.HIGHEST));
+        super(new AdapterParameteters().gamePhase(GamePhase.BOTH).plugin(ProtocolSupportPotions.getInstance()).types(new HashSet<>(getAllPackets())).listenerPriority(ListenerPriority.HIGHEST));
     }
 
     public void start() {
@@ -108,12 +111,16 @@ public class PacketListener extends PacketAdapter {
 
     @Override
     public ListeningWhitelist getReceivingWhitelist() {
-        return ListeningWhitelist.newBuilder().types(new HashSet<>(ProtocolSupportPotions.getInstance().getAllPackets())).gamePhase(GamePhase.BOTH).priority(ListenerPriority.HIGHEST).build();
+        return ListeningWhitelist.newBuilder().types(new HashSet<>(getAllPackets())).gamePhase(GamePhase.BOTH).priority(ListenerPriority.HIGHEST).build();
     }
 
     @Override
     public ListeningWhitelist getSendingWhitelist() {
-        return ListeningWhitelist.newBuilder().types(new HashSet<>(ProtocolSupportPotions.getInstance().getAllPackets())).gamePhase(GamePhase.BOTH).priority(ListenerPriority.HIGHEST).build();
+        return ListeningWhitelist.newBuilder().types(new HashSet<>(getAllPackets())).gamePhase(GamePhase.BOTH).priority(ListenerPriority.HIGHEST).build();
+    }
+
+    private static List<PacketType> getAllPackets() {
+        return StreamSupport.stream(Arrays.asList(PacketType.Play.Server.SPAWN_ENTITY, PacketType.Play.Server.WORLD_EVENT).spliterator(), false).filter(type -> type.isSupported()).collect(Collectors.toList());
     }
 
 }
