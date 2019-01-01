@@ -1,13 +1,8 @@
 package dashnetwork.protocolsupportpotions.main;
 
-import com.comphenix.protocol.PacketType;
 import dashnetwork.protocolsupportpotions.listeners.AreaEffectCloudListener;
 import dashnetwork.protocolsupportpotions.listeners.PacketListener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class ProtocolSupportPotions extends JavaPlugin {
 
@@ -35,10 +30,6 @@ public class ProtocolSupportPotions extends JavaPlugin {
         packetListener = null;
 
         instance = null;
-    }
-
-    public List<PacketType> getAllPackets() {
-        return StreamSupport.stream(PacketType.values().spliterator(), false).filter(type -> type.isSupported()).collect(Collectors.toList());
     }
 
 }
