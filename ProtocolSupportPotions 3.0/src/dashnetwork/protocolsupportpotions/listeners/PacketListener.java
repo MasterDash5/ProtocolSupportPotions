@@ -4,7 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.injector.GamePhase;
-import dashnetwork.protocolsupportpotions.main.ProtocolSupportPotions;
+import dashnetwork.protocolsupportpotions.ProtocolSupportPotions;
 import dashnetwork.protocolsupportpotions.utils.PotionTranslator;
 import dashnetwork.protocolsupportpotions.utils.SplashTranslator;
 import dashnetwork.protocolsupportpotions.utils.TranslationData;
@@ -44,35 +44,29 @@ public class PacketListener extends PacketAdapter {
         PacketType type = packet.getType();
 
         if (type.equals(PacketType.Play.Server.SPAWN_ENTITY)) {
-            if (packet.getIntegers().read(6) == 73) {
-                Player player = event.getPlayer();
-                int version = VersionUtils.getVersion(player);
-                PacketContainer edited = packet.deepClone();
-                Entity entity = packet.getEntityModifier(event).read(0);
+            Player player = event.getPlayer();
+            int version = VersionUtils.getVersion(player);
+            PacketContainer edited = packet.deepClone();
+            Entity entity = packet.getEntityModifier(event).read(0);
 
-                if (entity != null && entity instanceof ThrownPotion) {
-                    ThrownPotion potion = (ThrownPotion) entity;
+            if (entity != null && entity instanceof ThrownPotion) {
+                ThrownPotion potion = (ThrownPotion) entity;
 
-                    for (PotionEffect effect : potion.getEffects()) {
-                        for (PotionTranslator translator : PotionTranslator.values()) {
-                            if (effect.getType().equals(translator.getPotionEffectType())) {
-                                for (TranslationData data : translator.getDatas()) {
-                                    if (data.getLowestVersion() <= version && data.getHighestVersion() >= version)
-                                        edited.getIntegers().write(7, data.getRemap());
-                                }
-                            }
-                        }
-                    }
-                }
-
-                try {
-                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, edited, false);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                event.setCancelled(true);
+                for (PotionEffect effect : potion.getEffects())
+                    for (PotionTranslator translator : PotionTranslator.values())
+                        if (effect.getType().equals(translator.getPotionEffectType()))
+                            for (TranslationData data : translator.getDatas())
+                                if (data.getLowestVersion() <= version && data.getHighestVersion() >= version)
+                                    edited.getIntegers().write(VersionUtils.getServerVersion().startsWith("1.13") ? 7 : 6, data.getRemap());
             }
+
+            try {
+                ProtocolLibrary.getProtocolManager().sendServerPacket(player, edited, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            event.setCancelled(true);
         } else if (type.equals(PacketType.Play.Server.WORLD_EVENT)) {
             int effectId = packet.getIntegers().read(0);
 
@@ -84,14 +78,11 @@ public class PacketListener extends PacketAdapter {
                 if (version <= 210)
                     edited.getIntegers().write(0, 2002);
 
-                for (SplashTranslator translator : SplashTranslator.values()) {
-                    if (edited.getIntegers().read(1) == translator.getRGB()) {
-                        for (TranslationData data : translator.getDatas()) {
+                for (SplashTranslator translator : SplashTranslator.values())
+                    if (edited.getIntegers().read(1) == translator.getRGB())
+                        for (TranslationData data : translator.getDatas())
                             if (data.getLowestVersion() <= version && data.getHighestVersion() >= version)
                                 edited.getIntegers().write(1, data.getRemap());
-                        }
-                    }
-                }
 
                 try {
                     ProtocolLibrary.getProtocolManager().sendServerPacket(player, edited, false);

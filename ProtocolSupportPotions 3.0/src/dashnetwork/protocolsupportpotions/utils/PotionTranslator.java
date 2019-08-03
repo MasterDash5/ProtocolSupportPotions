@@ -2,7 +2,6 @@ package dashnetwork.protocolsupportpotions.utils;
 
 import org.bukkit.potion.PotionEffectType;
 
-
 public enum PotionTranslator {
 
     NIGHT_VISION(PotionEffectType.NIGHT_VISION, new TranslationData(16422, 0, 106)),

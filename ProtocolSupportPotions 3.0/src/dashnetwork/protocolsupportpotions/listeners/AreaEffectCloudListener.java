@@ -1,6 +1,6 @@
 package dashnetwork.protocolsupportpotions.listeners;
 
-import dashnetwork.protocolsupportpotions.main.ProtocolSupportPotions;
+import dashnetwork.protocolsupportpotions.ProtocolSupportPotions;
 import dashnetwork.protocolsupportpotions.utils.VersionUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.AreaEffectCloud;
